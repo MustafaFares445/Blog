@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\auth;
 use App\Http\Controllers\Controller;
-use App\Models\Admin;
+use App\Http\Requests\AuthorRequest;
 use App\Models\Author;
-use App\Models\User;
+use App\services\AuthorServices\LoginService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -22,19 +22,11 @@ class AuthorController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request){
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-        if (! $token = auth()->guard('author')->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-        return $this->createNewToken($token);
+    public function login(AuthorRequest $request)
+    {
+        return (new LoginService())->login($request);
     }
+
     /**
      * Register a User.
      *
