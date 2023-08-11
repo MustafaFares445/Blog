@@ -1,11 +1,10 @@
 <?php
 namespace App\Http\Controllers\auth;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AuthorRequest;
-use App\Models\Author;
+use App\Http\Requests\Login\AuthorLoginRequest;
+use App\Http\Requests\Register\AuthorRequest;
 use App\services\AuthorServices\LoginService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\services\AuthorServices\RegisterService;
 
 class AuthorController extends Controller
 {
@@ -22,35 +21,18 @@ class AuthorController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(AuthorRequest $request)
+    public function login(AuthorLoginRequest $request)
     {
         return (new LoginService())->login($request);
     }
-
     /**
      * Register a User.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-        $author = Author::create(array_merge(
-            $validator->validated(),
-            ['password' => bcrypt($request->password)]
-        ));
-        return response()->json([
-            'message' => 'User successfully registered',
-            'user' => $author
-        ], 201);
+    public function register(AuthorRequest $request) {
+        return (new RegisterService())->register($request);
     }
-
     /**
      * Log the user out (Invalidate the token).
      *

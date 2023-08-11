@@ -17,10 +17,12 @@ class LoginService
         $validator = $this->validation($request);
         $token = $this->isValidData($validator);
 
-        if( $this->checkStatus($request->email) == "pending")
-        {
+       if ($this->isVerified($request->email)  == null ){
+            return response()->json(["message" => "Your Account is Not Verified"]);
+        }
+        if( $this->checkStatus($request->email) == "pending") {
             return response()->json(["message" => "Your Account is Pending"]);
-        };
+        }
 
         return $this->createNewToken($token);
     }
@@ -44,6 +46,13 @@ class LoginService
         return $token;
     }
 
+    public function isVerified($email)
+    {
+        $author = $this->model->whereEmail($email)->first();
+        $verified_at = $author->verified_at;
+        return $verified_at;
+    }
+
     function checkStatus($email)
     {
       $author = $this->model->whereEmail($email)->first();
@@ -59,5 +68,6 @@ class LoginService
             'user' => auth()->guard('author')->user()
         ]);
     }
+
 
 }
