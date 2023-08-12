@@ -23,7 +23,7 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::with('categories' , 'tags')->get();
-        return $this->successResponse($posts);
+        return $this->paginate($posts);
     }
 
     /**
