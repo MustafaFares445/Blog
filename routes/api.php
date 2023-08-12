@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +15,23 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::resource('/category' , CategoryController::class);
+
+Route::prefix('/author')->middleware('auth:author')->group(function (){
+    Route::resource('/post' , PostController::class)->only('store' , 'update');
+});
+
+Route::resource('/post' , PostController::class)->except('store' , 'update');
+
+
+
+Route::prefix('/author')->middleware(['auth:author' , 'checkAuthor'])->group(function (){
+
+    Route::put('/updatePost/{post}' , [\App\Http\Controllers\UpdatePost::class , 'updateDetails']);
+    Route::put('/updatePostCategory' , [\App\Http\Controllers\UpdatePost::class , 'updateCategory']);
+    Route::put('/updatePostTag' , [\App\Http\Controllers\UpdatePost::class , 'updateTag']);
+    Route::put('/updatePostPhotos' , [\App\Http\Controllers\UpdatePost::class , 'updatePhotos']);
+
+});
+
 
 require 'auth.php';

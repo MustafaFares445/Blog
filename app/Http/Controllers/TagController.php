@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class TagController extends Controller
 {
-    use ApiResponseHelpers , ApiResponser;
+    use ApiResponseHelpers;
 
     /**
      * Display a listing of the resource.
@@ -64,5 +64,6 @@ class TagController extends Controller
         $tag->delete();
 
         return $this->respondOk("tag has been deleted");
+
     }
 }

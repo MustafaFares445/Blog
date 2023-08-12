@@ -5,16 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class PhotoPost extends Model
 {
     use HasFactory;
-    protected $hidden = ["pivot"];
+
     protected $fillable = [
-        "name"
+      'post_id',
+      'photo'
     ];
 
-    public function posts()
+    public function post()
     {
-        $this->hasMany(Post::class , "post_category");
+        $this->belongsTo(Post::class);
     }
 }

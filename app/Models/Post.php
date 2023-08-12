@@ -4,34 +4,38 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Post extends Model
 {
     use HasFactory;
 
+    CONST DEFAULT_STATUS = "pending";
     protected $fillable = [
-      'user_id',
-      'category_id',
+      'author_id',
+      'category',
       'title',
       'content',
     ];
 
-    public function categories()
-    {
-        return $this->belongsToMany(Category::class);
-    }
-
-    public function user()
+    public function user() : BelongsTo
     {
        return $this->belongsTo(User::class);
+    }
+    public function categories() : BelongsToMany
+    {
+        return $this->belongsToMany(Category::class , "post_category");
     }
 
     public function tags()
     {
-       return $this->hasMany(Tag::class);
+       return $this->belongsToMany(Tag::class , "post_tag");
     }
-    public function images()
+
+    public function photos(): HasMany
     {
-        return $this->hasMany(Image::class);
+        return $this->hasMany(PhotoPost::class);
     }
 }

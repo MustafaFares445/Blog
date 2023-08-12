@@ -9,7 +9,7 @@ use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class CategoryController extends ApiController
 {
     use ApiResponseHelpers , ApiResponser;
 
