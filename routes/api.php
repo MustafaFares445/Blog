@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboard\AdminNotificationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
@@ -36,5 +37,14 @@ Route::prefix('/author')->middleware(['auth:author' , 'checkAuthor'])->group(fun
 Route::get('/unauthorized' , function (){
    return response()->json(['message' => "unauthorized" , 401]);
 })->name('login');
+
+
+Route::controller(AdminNotificationController::class)->prefix('admin/notifications')->group(function (){
+    Route::get('/all' , ' index');
+    Route::get('/unread' , ' unread');
+    Route::post('/markRead/All' , 'markReadAll');
+    Route::delete('/delete/All' , 'deleteAll');
+    Route::delete('/delete/{id}' , 'delete');
+})->middleware('auth:admin');
 
 require 'auth.php';

@@ -53,5 +53,4 @@ class UpdatePost extends Controller
         return $this->successResponse($post->with('tags')->get() , 202);
     }
 
-
 }

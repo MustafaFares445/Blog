@@ -2,22 +2,46 @@
 
 namespace App\services\PostServices;
 
+use App\Models\Admin;
 use App\Models\Category;
 use App\Models\PhotoPost;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Notifications\PostsNotifications;
 use App\Traits\ApiResponser;
 use Exception;
 use F9Web\ApiResponseHelpers;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class StoringPostService
 {
     use ApiResponser;
 
+    function store($request)
+    {
+        try {
+            DB::beginTransaction();
+            $post = $this->storePost($request);
+
+            if ( $request->hasFile('photo') ) {
+                $this->storePostPhotos($request , $post);
+            }
+
+            DB::commit();
+            $admins = Admin::all();
+            Notification::send($admins , new PostsNotifications($post , $post->author));
+            return $this->successResponse($post , 201);
+
+        }catch (Exception $e){
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage() , 400);
+        }
+
+    }
+
     function storePost($request)
     {
-
 
         try {
             DB::beginTransaction();
@@ -56,23 +80,4 @@ class StoringPostService
     }
 
 
-    function store($request)
-    {
-        try {
-            DB::beginTransaction();
-            $post = $this->storePost($request);
-
-            if ( $request->hasFile('photo') ) {
-                $this->storePostPhotos($request , $post->id);
-            }
-
-            DB::commit();
-            return $this->successResponse($post , 201);
-
-        }catch (Exception $e){
-            DB::rollBack();
-            return $this->errorResponse($e->getMessage() , 400);
-        }
-
-    }
 }
