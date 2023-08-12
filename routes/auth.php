@@ -37,6 +37,7 @@ Route::middleware('api')->group(function (){
         Route::post('/logout',  'logout');
         Route::post('/refresh', 'refresh');
         Route::get('/user-profile',  'userProfile');
+        Route::get('/verify/{token}' , [\App\Http\Controllers\auth\AuthController::class , 'verify']);
     });
 
 

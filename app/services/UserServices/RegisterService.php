@@ -2,10 +2,12 @@
 
 namespace App\services\UserServices;
 
+use App\Mail\VerificationEmail;
 use App\Models\Author;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterService
@@ -21,12 +23,12 @@ class RegisterService
         try {
             DB::beginTransaction();
             $data = $this->validation($request);
-            $author = $this->store($data , $request);
+            $user = $this->store($data , $request);
 
-            $this->model = $author;
-            $storeToken = $this->generateToken($author->email);
+            $this->model = $user;
+            $this->generateToken($user->email);
 
-            $this->sendEmail();
+            $this->sendEmail($user);
             DB::commit();
             return response()->json([
                 "message" => "account has been created check your email"
@@ -47,23 +49,22 @@ class RegisterService
     }
     function store($data , $request)
     {
-        $author = $this->model->create(array_merge(
+        $user = $this->model->create(array_merge(
             $data->validated(),
             ['password' => bcrypt($request->password)]
         ));
-        return $author;
+        return $user;
     }
-    function generateToken($email)
+    function generateToken($email) : void
     {
         $token = substr(md5( rand(0 , 9) . $email . time()) , 0 , 32);
         $this->model->verification_token = $token;
         $this->model->save();
 
-        return $token;
     }
 
-    function sendEmail()
+    function sendEmail($user)
     {
-
+        Mail::to($user->email)->send(new VerificationEmail($user));
     }
 }

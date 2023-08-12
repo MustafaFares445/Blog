@@ -6,18 +6,20 @@ use App\Http\Requests\Register\UserRequest;
 use App\Models\User;
 use App\services\UserServices\LoginService;
 use App\services\UserServices\RegisterService;
+use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    use ApiResponser;
     /**
      * Create a new AuthController instance.
      *
      * @return void
      */
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register' , 'verify']]);
     }
     /**
      * Get a JWT via given credentials.
@@ -37,6 +39,16 @@ class AuthController extends Controller
         return (new RegisterService())->register($request);
     }
 
+    public function verify($token)
+    {
+        $user = User::where('verification_token' , $token)->first();
+        if (!$user) {
+            return $this->errorResponse("this token is invalid" , 400);
+        }
+        $user->verification_token = null;
+        $user->verified_at = now();
+        return $this->successResponse("your account has been verified");
+    }
     /**
      * Log the user out (Invalidate the token).
      *

@@ -16,7 +16,6 @@ class PostController extends Controller
 {
     use ApiResponser;
 
-    private array $data;
     /**
      * Display a listing of the resource.
      */

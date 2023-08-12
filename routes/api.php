@@ -33,5 +33,8 @@ Route::prefix('/author')->middleware(['auth:author' , 'checkAuthor'])->group(fun
 
 });
 
+Route::get('/unauthorized' , function (){
+   return response()->json(['message' => "unauthorized" , 401]);
+})->name('login');
 
 require 'auth.php';
