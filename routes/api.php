@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminDashboard\AdminNotificationController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UpdatePost;
@@ -27,8 +28,8 @@ Route::middleware('auth:admin')->prefix('admin')->group(function (){
         Route::delete('/delete/All' , 'deleteAll');
         Route::delete('/delete/{id}' , 'delete');
     });
-    Route::get('/post/pending' , [App\Http\Controllers\AdminDashboard\PostController::class , 'pendingPosts']);
-    Route::put('/post/status' , [App\Http\Controllers\AdminDashboard\PostController::class , 'changeStatus']);
+    Route::get('/post/pending' , [App\Http\Controllers\AdminDashboard\PostStatusController::class , 'pendingPosts']);
+    Route::put('/post/status' , [App\Http\Controllers\AdminDashboard\PostStatusController::class , 'changeStatus']);
     Route::resource('/post' , PostController::class)->except('store');
 
     Route::resource("category" , CategoryController::class);
@@ -38,8 +39,9 @@ Route::middleware('auth:admin')->prefix('admin')->group(function (){
 
 Route::middleware('auth:author')->prefix('author')->group(function (){
 
+  //  Route::get('/post/filter' , [PostController::class , 'filter']);
     Route::resource('/post' , PostController::class);
-
+    Route::post('/insert/photo' , [PhotoController::class , 'store']);
 
     Route::controller(UpdatePost::class)->prefix('/post/{post}')->group(function (){
         Route::put('/update' ,  'updateDetails');

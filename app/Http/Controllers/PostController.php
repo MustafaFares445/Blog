@@ -11,6 +11,7 @@ use Exception;
 use F9Web\ApiResponseHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class PostController extends Controller
 {
@@ -21,7 +22,13 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::where('status' , Post::APPROVED_STATUS)->with('categories' , 'tags')->get()->makeHidden('status');
+        $posts = QueryBuilder::for(Post::class)
+                 ->allowedFilters(['author_id' , 'categories.name' , 'tags.name' , 'title' , 'content'])
+                 ->where('status' , Post::APPROVED_STATUS)
+                 ->with(['categories:name' , 'tags:name' , 'author:id,name'])
+                 ->get();
+
+     //   $posts = Post::where('status' , Post::APPROVED_STATUS)->with('categories' , 'tags' , 'author:id,name')->get()->makeHidden('status');
         return $this->paginate($posts);
     }
 

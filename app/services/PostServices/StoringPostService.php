@@ -46,9 +46,10 @@ class StoringPostService
         try {
             DB::beginTransaction();
 
-            $categoryId = Category::where('name' , $request->category)->get()[0]->id;
+            $categoryId = Category::where('name' , $request->category)->firstOrFail()->id;
 
-            $tagId = Tag::where('name' , $request->tag)->get()[0]->id;
+            $tagId = Tag::where('name' , $request->tag)->firstOrFail()->id;
+
 
             $post = Post::create([
                 'author_id' => auth()->guard('author')->id(),

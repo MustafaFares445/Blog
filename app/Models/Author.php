@@ -25,6 +25,7 @@ class Author extends Authenticatable implements JWTSubject
         'password',
     ];
 
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -33,6 +34,11 @@ class Author extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+        'status' ,
+        'verification_token' ,
+        'verified_at' ,
+        'created_at' ,
+        'updated_at'
     ];
 
     /**

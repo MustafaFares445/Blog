@@ -18,7 +18,7 @@ class RegisterService
         $this->model = new Author();
     }
 
-    function register($request) : JsonResponse
+    function register($request)
     {
         try {
             DB::beginTransaction();
@@ -50,7 +50,7 @@ class RegisterService
         }
         return $validator;
     }
-    function store($data , $request) : Author
+    function store($data , $request)
     {
         $author = $this->model->create(array_merge(
             $data->validated(),
