@@ -2,9 +2,12 @@
 
 namespace App\services\AuthorServices;
 
+use App\Mail\VerificationEmail;
 use App\Models\Author;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterService
@@ -15,7 +18,7 @@ class RegisterService
         $this->model = new Author();
     }
 
-    function register($request)
+    function register($request) : JsonResponse
     {
         try {
             DB::beginTransaction();
@@ -23,9 +26,9 @@ class RegisterService
             $author = $this->store($data , $request);
 
             $this->model = $author;
-            $storeToken = $this->generateToken($author->email);
+            $this->generateToken($author->email);
 
-            $this->sendEmail();
+            $this->sendEmail($author);
             DB::commit();
 
             return response()->json([
@@ -37,8 +40,6 @@ class RegisterService
             return response()->json(["error" => $e->getMessage()], 400);
         }
 
-
-
     }
 
     public function validation($request)
@@ -49,7 +50,7 @@ class RegisterService
         }
         return $validator;
     }
-    function store($data , $request)
+    function store($data , $request) : Author
     {
         $author = $this->model->create(array_merge(
             $data->validated(),
@@ -57,17 +58,16 @@ class RegisterService
         ));
         return $author;
     }
-    function generateToken($email)
+    function generateToken($email) : void
     {
         $token = substr(md5( rand(0 , 9) . $email . time()) , 0 , 32);
         $this->model->verification_token = $token;
         $this->model->save();
 
-        return $token;
     }
 
-    function sendEmail()
+    function sendEmail($author) : void
     {
-
+        Mail::to($author->email)->send(new VerificationEmail($author));
     }
 }

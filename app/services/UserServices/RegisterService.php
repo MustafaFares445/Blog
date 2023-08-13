@@ -6,6 +6,7 @@ use App\Mail\VerificationEmail;
 use App\Models\Author;
 use App\Models\User;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -18,7 +19,7 @@ class RegisterService
         $this->model = new User();
     }
 
-    function register($request)
+    function register($request) : JsonResponse
     {
         try {
             DB::beginTransaction();
@@ -47,7 +48,7 @@ class RegisterService
         }
         return $validator;
     }
-    function store($data , $request)
+    function store($data , $request) : User
     {
         $user = $this->model->create(array_merge(
             $data->validated(),
@@ -63,7 +64,7 @@ class RegisterService
 
     }
 
-    function sendEmail($user)
+    function sendEmail($user) : void
     {
         Mail::to($user->email)->send(new VerificationEmail($user));
     }

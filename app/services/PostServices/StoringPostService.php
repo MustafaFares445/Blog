@@ -54,7 +54,6 @@ class StoringPostService
                 'author_id' => auth()->guard('author')->id(),
                 'title' => $request->title,
                 'content' => $request->content,
-                'status' => Post::DEFAULT_STATUS,
             ]);
 
             $post->categories()->attach([$categoryId]);

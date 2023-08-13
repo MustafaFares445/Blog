@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class AdminNotificationController extends Controller
 {
     use ApiResponser;
-    function index()
+    function all()
     {
         $admin = Admin::find(auth()->id());
         return $this->successResponse([

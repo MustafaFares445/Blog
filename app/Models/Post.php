@@ -13,6 +13,9 @@ class Post extends Model
     use HasFactory;
 
     CONST DEFAULT_STATUS = "pending";
+    CONST APPROVED_STATUS = "approved";
+    CONST REJECTED_STATUS = "rejected";
+
     protected $fillable = [
       'author_id',
       'category',

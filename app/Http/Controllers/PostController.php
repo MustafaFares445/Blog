@@ -21,7 +21,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('categories' , 'tags')->get();
+        $posts = Post::where('status' , Post::APPROVED_STATUS)->with('categories' , 'tags')->get()->makeHidden('status');
         return $this->paginate($posts);
     }
 
@@ -64,4 +64,6 @@ class PostController extends Controller
         }
 
     }
+
+
 }

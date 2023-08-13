@@ -3,6 +3,8 @@
 use App\Http\Controllers\AdminDashboard\AdminNotificationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\UpdatePost;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -15,36 +17,48 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::resource('/category' , CategoryController::class);
 
-Route::prefix('/author')->middleware('auth:author')->group(function (){
-    Route::resource('/post' , PostController::class)->only('store' , 'update');
+Route::middleware('auth:admin')->prefix('admin')->group(function (){
+
+    Route::controller(AdminNotificationController::class)->prefix('/notification')->group(function (){
+        Route::get('/all' , ' index');
+        Route::get('/unread' , ' unread');
+        Route::post('/markRead/All' , 'markReadAll');
+        Route::delete('/delete/All' , 'deleteAll');
+        Route::delete('/delete/{id}' , 'delete');
+    });
+    Route::get('/post/pending' , [App\Http\Controllers\AdminDashboard\PostController::class , 'pendingPosts']);
+    Route::put('/post/status' , [App\Http\Controllers\AdminDashboard\PostController::class , 'changeStatus']);
+    Route::resource('/post' , PostController::class)->except('store');
+
+    Route::resource("category" , CategoryController::class);
+    Route::resource("tag" , TagController::class);
+
 });
 
-Route::resource('/post' , PostController::class)->except('store' , 'update');
+Route::middleware('auth:author')->prefix('author')->group(function (){
+
+    Route::resource('/post' , PostController::class);
 
 
+    Route::controller(UpdatePost::class)->prefix('/post/{post}')->group(function (){
+        Route::put('/update' ,  'updateDetails');
+        Route::put('/updateCategory' ,  'updateCategory');
+        Route::put('/updateTag' ,  'updateTag');
+        Route::put('/updatePhotos' ,  'updatePhotos');
+    });
 
-Route::prefix('/author')->middleware(['auth:author' , 'checkAuthor'])->group(function (){
+});
 
-    Route::put('/updatePost/{post}' , [\App\Http\Controllers\UpdatePost::class , 'updateDetails']);
-    Route::put('/updatePostCategory' , [\App\Http\Controllers\UpdatePost::class , 'updateCategory']);
-    Route::put('/updatePostTag' , [\App\Http\Controllers\UpdatePost::class , 'updateTag']);
-    Route::put('/updatePostPhotos' , [\App\Http\Controllers\UpdatePost::class , 'updatePhotos']);
+Route::middleware('auth:user')->prefix('user')->group(function (){
+
+    Route::resource('/post' , PostController::class)->only(['show' , 'index']);
 
 });
 
 Route::get('/unauthorized' , function (){
-   return response()->json(['message' => "unauthorized" , 401]);
+    return response()->json(['message' => "unauthorized" , 401]);
 })->name('login');
 
-
-Route::controller(AdminNotificationController::class)->prefix('admin/notifications')->group(function (){
-    Route::get('/all' , ' index');
-    Route::get('/unread' , ' unread');
-    Route::post('/markRead/All' , 'markReadAll');
-    Route::delete('/delete/All' , 'deleteAll');
-    Route::delete('/delete/{id}' , 'delete');
-})->middleware('auth:admin');
 
 require 'auth.php';
