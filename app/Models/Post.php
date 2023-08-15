@@ -39,6 +39,6 @@ class Post extends Model
 
     public function photos(): HasMany
     {
-        return $this->hasMany(PhotoPost::class);
+        return $this->hasMany(PhotoPost::class , 'post_id');
     }
 }

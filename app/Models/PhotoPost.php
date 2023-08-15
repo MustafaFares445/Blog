@@ -9,13 +9,14 @@ class PhotoPost extends Model
 {
     use HasFactory;
 
+    protected $table = "post_photos";
     protected $fillable = [
       'post_id',
-      'photo'
+      'photos'
     ];
 
     public function post()
     {
-        $this->belongsTo(Post::class);
+       return  $this->belongsTo(Post::class );
     }
 }

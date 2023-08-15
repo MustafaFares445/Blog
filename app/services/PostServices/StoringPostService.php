@@ -24,8 +24,8 @@ class StoringPostService
             DB::beginTransaction();
             $post = $this->storePost($request);
 
-            if ( $request->hasFile('photo') ) {
-                $this->storePostPhotos($request , $post);
+            if ( $request->hasFile('photos') ) {
+                $this->storePostPhotos($request , $post->id);
             }
 
             DB::commit();
@@ -70,12 +70,21 @@ class StoringPostService
 
     function storePostPhotos($request , $postId) :void
     {
-        foreach ($request->file('photo') as $photo){
-            $postPhoto = new PhotoPost();
-            $postPhoto->post_id = $postId;
-            $postPhoto->photo = $photo->store('posts');
-            $postPhoto->save();
-        }
+
+//       $photo = $request->file('photos');
+       //dd($photos->store('posts'));
+
+            $filename = time() . '.' . $request->photos->extension();
+
+             $request->photos->move(public_path('photos'), $filename);
+      //  dd($postPhotos);
+       // $postId = DB::table('posts')->where('id' , $postId)->get()->id;
+            $postPhotos = PhotoPost::create([
+                "post_id" => $postId,
+                "photos" => $filename
+            ]);
+
+
 
     }
 

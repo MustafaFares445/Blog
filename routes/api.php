@@ -39,7 +39,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(function (){
 
 Route::middleware('auth:author')->prefix('author')->group(function (){
 
-  //  Route::get('/post/filter' , [PostController::class , 'filter']);
     Route::resource('/post' , PostController::class);
     Route::post('/insert/photo' , [PhotoController::class , 'store']);
 

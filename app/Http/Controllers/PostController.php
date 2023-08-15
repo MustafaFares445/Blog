@@ -25,11 +25,11 @@ class PostController extends Controller
         $posts = QueryBuilder::for(Post::class)
                  ->allowedFilters(['author_id' , 'categories.name' , 'tags.name' , 'title' , 'content'])
                  ->where('status' , Post::APPROVED_STATUS)
-                 ->with(['categories:name' , 'tags:name' , 'author:id,name'])
+                 ->with(['categories:name' , 'tags:name' , 'author:id,name' ])
                  ->get();
 
      //   $posts = Post::where('status' , Post::APPROVED_STATUS)->with('categories' , 'tags' , 'author:id,name')->get()->makeHidden('status');
-        return $this->paginate($posts);
+        return $this->paginate($posts->photos());
     }
 
     /**
@@ -46,7 +46,7 @@ class PostController extends Controller
     public function show(string $id)
     {
         $post = Post::whereId($id);
-
+        $post->with('photos')->get();
         return $this->successResponse($post->with('categories')->with('tags')->get());
     }
 
@@ -71,6 +71,4 @@ class PostController extends Controller
         }
 
     }
-
-
 }

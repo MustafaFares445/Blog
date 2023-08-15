@@ -57,5 +57,4 @@ Route::middleware('api')->group(function (){
         Route::post('/refresh', 'refresh');
         Route::get('/user-profile',  'userProfile');
     });
-
 });

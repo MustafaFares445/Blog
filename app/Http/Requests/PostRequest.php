@@ -24,7 +24,7 @@ class PostRequest extends FormRequest
         return [
             'title' => 'required|string',
             'content' => 'required|string',
-            'photo' => 'nullable|array|image|mimes:png,jpg,jpeg',
+            'photos.*.' => 'nullable|array|image|mimes:png,jpg,jpeg',
             'tag' => 'required|exists:tags,name',
             'category' => 'required|exists:categories,name',
         ];
