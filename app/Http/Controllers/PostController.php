@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PostShow;
 use App\Http\Requests\PostRequest;
 use App\Models\PhotoPost;
 use App\Models\Post;
@@ -47,6 +48,8 @@ class PostController extends Controller
     {
         $post = Post::whereId($id);
         $post->with('photos')->get();
+
+        event(new PostShow(auth()->user() , $post));
         return $this->successResponse($post->with('categories')->with('tags')->get());
     }
 

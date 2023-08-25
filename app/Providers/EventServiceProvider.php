@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\PostShow;
+use App\Listeners\PostShowListener;
 use App\Models\Post;
 use App\Observers\PostObserver;
 use Illuminate\Auth\Events\Registered;
@@ -19,6 +21,10 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+
+        PostShow::class => [
+          PostShowListener::class,
         ],
     ];
 
