@@ -46,6 +46,8 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
+        $this->middleware('checkPost');
+
         $post = Post::whereId($id);
         $post->with('photos')->get();
 
