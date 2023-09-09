@@ -1,4 +1,4 @@
-## Blood Donation System
+## Blog breeze
 
 #### During my internship at Focal x company, I gained experience working on this project under the guidance of my mentor, Somar Kasen. 
 #### With his support, I was able to successfully build the project independently.
