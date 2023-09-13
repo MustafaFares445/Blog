@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
-trait ApiResponser
+trait  ApiResponser
 {
     /**
      * @return JsonResponse
@@ -59,7 +59,8 @@ trait ApiResponser
 
     protected function sortData(Collection $collection, $transformer)
     {
-        if (request()->has('sort_by')) {
+        if (request()->has('sort_by'))
+        {
             $attribute = $transformer::originalAttribute(request()->sort_by);
             $collection = $collection->sortBy($attribute);
         }

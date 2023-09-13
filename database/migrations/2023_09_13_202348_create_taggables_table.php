@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('post_photos', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('post_id')->constrained('posts')->references('id')->cascadeOnDelete();
-            $table->string('photos');
-            $table->timestamps();
+        Schema::create('taggables', function (Blueprint $table) {
+            $table->foreignId('tag_id');
+            $table->morphs('taggable');
         });
     }
 
@@ -24,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('images');
+        Schema::dropIfExists('taggable');
     }
 };

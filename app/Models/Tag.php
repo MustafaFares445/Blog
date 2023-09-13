@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Tag extends Model
 {
@@ -15,6 +16,6 @@ class Tag extends Model
 
     public function posts()
     {
-        return $this->HasMany(Post::class , "post_tag");
+        return $this->morphedByMany(Post::class , 'taggable');
     }
 }

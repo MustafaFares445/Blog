@@ -5,13 +5,13 @@ use App\Models\Author;
 use Illuminate\Support\Facades\Validator;
 class LoginService
 {
-    protected $model;
+    protected Author $model;
     function __construct()
     {
         $this->model = new Author();
     }
 
-    public function login($request)
+    public function login($request): \Illuminate\Http\JsonResponse
     {
         $validator = $this->validation($request);
         $token = $this->isValidData($validator);
@@ -20,7 +20,7 @@ class LoginService
     }
 
 
-    public function validation($request)
+    public function validation($request): \Illuminate\Validation\Validator|\Illuminate\Http\JsonResponse
     {
         $validator = Validator::make($request->all(), $request->rules());
         if ($validator->fails()) {
@@ -29,8 +29,7 @@ class LoginService
         return $validator;
     }
 
-
-    function isValidData($data)
+    function isValidData($data): \Illuminate\Http\JsonResponse|bool
     {
         if (! $token = auth()->guard('admin')->attempt($data->validated())) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -38,7 +37,8 @@ class LoginService
         return $token;
     }
 
-    protected function createNewToken($token){
+    protected function createNewToken($token): \Illuminate\Http\JsonResponse
+    {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',

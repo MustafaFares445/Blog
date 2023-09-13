@@ -23,7 +23,7 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(AdminLoginRequest $request)
+    public function login(AdminLoginRequest $request): \Illuminate\Http\JsonResponse
     {
         return (new LoginService())->login($request);
     }
@@ -33,11 +33,12 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request) {
+    public function register(Request $request): \Illuminate\Http\JsonResponse
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|between:2,100',
             'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string',
         ]);
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);

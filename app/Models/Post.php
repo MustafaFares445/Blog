@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Post extends Model
 {
@@ -29,16 +32,16 @@ class Post extends Model
     }
     public function categories() : BelongsToMany
     {
-        return $this->belongsToMany(Category::class , "post_category");
-    }
-
-    public function tags()
-    {
-       return $this->belongsToMany(Tag::class , "post_tag");
+        return $this->belongsToMany(Category::class , 'post_categories');
     }
 
     public function photos(): HasMany
     {
         return $this->hasMany(PhotoPost::class , 'post_id');
+    }
+
+    public function tags(): MorphToMany
+    {
+        return $this->morphToMany(Tag::class , 'taggable');
     }
 }
