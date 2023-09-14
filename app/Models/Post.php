@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use App\Helpers\Helper;
 
 class Post extends Model
 {
@@ -43,5 +44,10 @@ class Post extends Model
     public function tags(): MorphToMany
     {
         return $this->morphToMany(Tag::class , 'taggable');
+    }
+
+    public static function useHelper(): string
+    {
+        return Helper::mustafa();
     }
 }
